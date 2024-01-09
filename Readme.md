@@ -44,7 +44,8 @@ El proceso de ETL aplicado, toma los archivos originales de la ruta 'Datasets/Or
 
 2. En relación con los archivos contenidos en 'Datasets', debido al tamaño de los mismos, solo se dejó en el repositorio los que estan dentro de 'Datasets/Clean_Parquet_Data_Steam/', que son los requeridos por las Funciones con las que se creó la solución con FastAPI y Render -incluida la que hace la Recomendación de Juegos.
 A través del siguiente enlace, se tiene acceso al 'Datasets' completo, en caso de tener interés en ejecutar el código relativo al ETL_on_json_files.ipynb.
-Datasets: XXXXXXXXXX
+
+Datasets: https://drive.google.com/file/d/1C3cPov6e-AtVzh7rP3FVe4uGyfmr7l7J/view?usp=sharing
 
 ### Feature Engineering
 En [Feature_Engineering.ipynb](Code/Feature_Engineering.ipynb) se encuentra documentado el detalle de este proceso. Se refiere a que el DataFrame construido con el archivo que incluye reseñas de juegos hechos por distintos usuarios, tiene la columna 'review', la cual es un texto con la respectiva reseña hecha por el usuario. Se me pide eliminar la columna luego de crear la columna ***'sentiment_analysis'*** aplicando análisis de sentimiento con NLP con la siguiente escala: debe tomar el valor '0' si es malo, '1' si es neutral y '2' si es positivo. Esta nueva columna, que reemplaza la columna 'review' busca facilitar el trabajo del modelo de machine learning y el análisis de datos. De no ser posible este análisis por estar ausente la reseña escrita, ***'sentiment_analysis'*** debe tomar el valor de '1'.
