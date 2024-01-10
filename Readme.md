@@ -69,7 +69,8 @@ El servicio de recomendación desarrollado se presta con la función 'recomendac
 Todas estas funciones se consolidan en el archivo [main.py](main.py) para ser levantadas con FastAPI y disponibilizadas a través de ***Render***.
 
 ## Video
-El siguiente enlace da acceso al video corto -menos de 7 minutos- que presenta el proyecto funcionando: XXXXX
+El siguiente enlace da acceso al video corto -menos de 7 minutos- que presenta el proyecto funcionando: 
 
+https://drive.google.com/file/d/1EI3eZHm4opUYNF1iUbKJSSe5HAppFzNv/view?usp=sharing
   
 <br/>
