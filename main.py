@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi import FastAPI
+import sys
 
 app = FastAPI()
 
@@ -13,20 +14,39 @@ df1 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_user_r
 df2 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_output_steam_games.parquet')
 
 # Carga el archivo Parquet 'Clean_australian_users_items.parquet' en DataFrame 'df3'
-df3 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_users_items.parquet')
+#df3 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_users_items.parquet')
+
+# Define filtro para cargar solo los registros con 'playtime_forever' mayor que 1000
+filters = [('playtime_forever', '>', 1000)]
+
+# Especifica las columnas a cargar en el DataFrame
+columns_to_keep = ['item_id', 'item_name', 'playtime_forever', 'user_id']
+
+# Carga registros desde el archivo Parquet aplicando el filtro y especificando columnas
+df3 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_users_items.parquet',
+                      columns=columns_to_keep, filters=filters)
 
 ########################################################################################################
 # Carga el modelo de recomendación de juegos que será consumido por la funcion recomendacion_juego(id)
 ########################################################################################################
 # 1. Preparación de datos:
-# Combina columnas relevantes en una columna 'combined_features'
-df2['combined_features'] = df2['genres'] + ' ' + df2['specs'] + ' ' + df2['developer'] + ' ' + df2['id']
+# Función que combina columnas relevantes de df2 en una columna 'combined_features' y devuelve la 5ta parte.
+# Esto fue necesario para optimizar el uso de memoria. Con los ajustes al código original se bajó de 4 GB
+# a menos de 400 MB
+def CombFeatures():
+    total_rows = len(df2)
+    start_row = 0 
+    end_row = total_rows // 5
+    df = pd.DataFrame()
+    df['combined_features'] = df2['genres'] + ' ' + df2['specs'] + ' ' + df2['developer'] + ' ' + df2['id']
+    return df.loc[start_row:end_row, 'combined_features']
 
 # 2. Vectorización TF-IDF:
 # Inicializa el vectorizador TF-IDF
 tfidf_vectorizer = TfidfVectorizer()
 # Transforma la columna 'combined_features' en una matriz TF-IDF
-tfidf_matrix = tfidf_vectorizer.fit_transform(df2['combined_features'])
+#tfidf_matrix = tfidf_vectorizer.fit_transform(df2['combined_features'])
+tfidf_matrix = tfidf_vectorizer.fit_transform(CombFeatures())
 
 # 3. Cálculo de similitud del coseno:
 # Calcula la similitud del coseno entre juegos
@@ -209,4 +229,42 @@ def recomendacion_juego(id: str):
 
     return recommended_games
 
+
+###############################################################################################
+
+# Función para ayudar en la depuración del uso de memoria del código
+def print_memory_usage():
+    objects = globals()
+    total_memory = 0
+    
+    for obj_name, obj in objects.items():
+        # DataFrames
+        if isinstance(obj, pd.DataFrame):
+            memory = sys.getsizeof(obj) / (1024 * 1024)
+            print(f"Tamaño de DataFrame '{obj_name}': {memory:.2f} MB")
+            total_memory += memory
+        
+        # TfidfVectorizer
+        elif isinstance(obj, TfidfVectorizer):
+            memory = sys.getsizeof(obj) / (1024 * 1024)
+            print(f"Tamaño de TfidfVectorizer '{obj_name}': {memory:.2f} MB")
+            total_memory += memory
+        
+        # ndarray
+        elif isinstance(obj, np.ndarray):
+            memory = sys.getsizeof(obj) / (1024 * 1024)
+            print(f"Tamaño de ndarray '{obj_name}': {memory:.2f} MB")
+            total_memory += memory
+
+        # Otros objetos FastAPI, etc.
+        elif isinstance(obj, FastAPI):
+            memory = sys.getsizeof(obj) / (1024 * 1024)
+            print(f"Tamaño de FastAPI '{obj_name}': {memory:.2f} MB")
+            total_memory += memory
+    
+    print(f"Tamaño total de la memoria consumida: {total_memory:.2f} MB")
+
+
+# Llamada a la función para imprimir el tamaño de los objetos
+#print_memory_usage()
 
