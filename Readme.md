@@ -68,47 +68,56 @@ El servicio de recomendación desarrollado se presta con la función 'recomendac
 
 Todas estas funciones se consolidan en el archivo [main.py](main.py) para ser levantadas con FastAPI y disponibilizadas a través de ***Render***.
 
-#### Como crear soluciones con FastAPI    
+#### **Como crear soluciones con FastAPI en un ambiente virtual habilitando el control de versiones con GIT.**    
 
-Desde la consola Gitbash o la terminal de VSC:
+Desde la consola Gitbash o la terminal de VSC...    
 
-1) Crear entorno virtual:    
+0) Crea un repositorio GIT en la carpeta local que contendrá el proyecto:    
+git init
+
+1) Crea el entorno virtual (my_venv):    
 python -m venv my_venv
 
-2) Activar el venv:     
+2) Activa el entorno virtual:     
 source my_venv/Scripts/activate
 
-3) Crear el archivo .gitignore    
+3) Crea el archivo .gitignore    
 touch .gitignore
 
-4) Editar .gitignore para agregar el entorno virtual y así quede excluido del repositorio GIT:    
+4) Edita .gitignore para agregar el entorno virtual y así quede excluido del repositorio GIT:    
 my_venv    
 /my_venv    
 my_venv/    
 /my_venv/    
 
-5) Estando dentro del entorno virtual (my_venv) realizar la instalacion de las librerías requeridas por el código en main.py:    
-pip install fastapi uvicorn pandas scikit-learn pyarrow fastparquet
+5) Con el entorno virtual activo, instala las librerías requeridas por el código en main.py:    
+pip install fastapi uvicorn pandas scikit-learn pyarrow fastparquet    
 
-6) Crear un archivo 'main.py' que contenga la solución software desarrollada -tan simple como desarrollar funciones, o tan compleja como quieras.    
+6) Asegurate que el archivo 'main.py' que contiene la API desarrollada, se encuentra al mismo nivel de las carpetas 'my_venv' y .git.    
 La estructura del contenido de main.py debe ser:    
-  from fastapi import FastAPI    
-  app = FastAPI()    
-    
-  A continuación el endpoint...    
-  @app.get("/PlayTimeGenre/{genero}")    
-  def PlayTimeGenre(genero: str):    
-  ...     
 
-7) Ejecuta y prueba tu solución software creada con FastAPI con alguna de las siguientes líneas:    
+    from fastapi import FastAPI    
+    app = FastAPI()    
+    
+    A continuación el endpoint...    
+    @app.get("/PlayTimeGenre/{genero}")    
+    def PlayTimeGenre(genero: str):    
+    ...     
+
+7) Ejecuta y prueba tu solución software creada con FastAPI. Para ello, levanta el servidor uvicorn que aloja la API, usando alguna de las siguientes líneas desde la ventana Git Bash:    
 uvicorn main:app --reload          
 uvicorn main:app --reload > output.txt        
 uvicorn main:app --port 10000 --reload         
 
-8) Cuando todo funcione OK, es tiempo de crear una lista de las dependencias al mismo nivel del 'venv' -la ubicación raiz del repo local:    
+8) Con el servidor uvicorn arriba, puedes dejar momentaneamente la ventana Git Bash para probar tu API en un web browser usando la siguiente URL:    
+localhost:8000/docs.    
+
+    Ahora puedes probar cada uno de los endpoints que creaste en tu API.    
+
+9) Cuando todo funcione OK, es tiempo de volver a la ventana Git Bash para crear un archivo 'requirements.txt' al mismo nivel de las carpetas 'my_venv' y .git:    
 pip freeze > requirements.txt    
 
-9) Si lo estimas conveniente, crea el repo local con Git -si aún no lo tienes- y subelo al repo público en GitHub.
+10) Si lo estimas conveniente, sube el repositorio local al repo público en GitHub.
 
 El siguiente enlace da acceso a un video donde se explica en detalle como implementar soluciones con FastAPI:   
 https://www.youtube.com/watch?v=12NIB_RjxMo
