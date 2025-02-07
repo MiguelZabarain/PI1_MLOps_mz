@@ -68,6 +68,49 @@ El servicio de recomendación desarrollado se presta con la función 'recomendac
 
 Todas estas funciones se consolidan en el archivo [main.py](main.py) para ser levantadas con FastAPI y disponibilizadas a través de ***Render***.
 
+#### Como crear soluciones con FastAPI    
+
+Desde la consola Gitbash o la terminal de VSC:
+
+1) Crear entorno virtual: python -m venv my_venv
+
+2) Activar el venv: source my_venv/Scripts/activate
+
+3) Crear el archivo .gitignore
+touch .gitignore
+
+4) Editar .gitignore para agregar el entorno virtual y así quede excluido del repositorio GIT:
+my_venv
+/my_venv
+my_venv/
+/my_venv/
+
+5) Estando dentro del entorno virtual (my_venv) realizar la instalacion de las librerías requeridas por el código en main.py:
+pip install fastapi uvicorn pandas scikit-learn pyarrow fastparquet
+
+6) Crear un archivo 'main.py' que contenga la solución software desarrollada -tan simple como desarrollar funciones, o tan compleja como quieras.
+La estructura del contenido de main.py debe ser:
+  from fastapi import FastAPI
+  app = FastAPI()
+
+  A continuación el endpoint...    
+  @app.get("/PlayTimeGenre/{genero}")    
+  def PlayTimeGenre(genero: str):    
+  ...     
+
+7) Ejecuta y prueba tu solución software creada con FastAPI con alguna de las siguientes líneas:    
+uvicorn main:app --reload                  <---Con la opción --reload, evitas bajar y subir el servidor cada que hagas modificaciones en main.py    
+uvicorn main:app --reload > output.txt     <---Enviando los prints al archivo 'output.txt'     
+uvicorn main:app --port 10000 --reload     <---Especificando el puerto     
+
+8) Cuando todo funcione OK, es tiempo de crear una lista de las dependencias al mismo nivel del 'venv' -la ubicación raiz del repo local:
+pip freeze > requirements.txt
+
+9) Si lo estimas conveniente, crea el repo local con Git -si aún no lo tienes- y subelo al repo público en GitHub.
+
+El siguiente enlace da acceso a un video donde se explica en detalle como implementar soluciones con FastAPI:   
+https://www.youtube.com/watch?v=12NIB_RjxMo
+
 ## Video
 El siguiente enlace da acceso al video corto -menos de 7 minutos- que presenta el proyecto funcionando: 
 
