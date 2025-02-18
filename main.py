@@ -17,7 +17,7 @@ df2 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_output_steam_game
 #df3 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_users_items.parquet')
 
 # Define filtro para cargar solo los registros con 'playtime_forever' mayor que 1000
-filters = [('playtime_forever', '>', 1500)]
+filters = [('playtime_forever', '>', 0)]
 
 # Especifica las columnas a cargar en el DataFrame
 columns_to_keep = ['item_id', 'item_name', 'playtime_forever', 'user_id']
@@ -36,7 +36,7 @@ df3 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_users_
 def CombFeatures():
     total_rows = len(df2)
     start_row = 0 
-    end_row = total_rows // 10
+    end_row = total_rows - 1#// 10
     df = pd.DataFrame()
     df['combined_features'] = df2['genres'] + ' ' + df2['specs'] + ' ' + df2['developer'] + ' ' + df2['id']
     return df.loc[start_row:end_row, 'combined_features']
@@ -260,6 +260,11 @@ def print_memory_usage():
         elif isinstance(obj, FastAPI):
             memory = sys.getsizeof(obj) / (1024 * 1024)
             print(f"Tamaño de FastAPI '{obj_name}': {memory:.2f} MB")
+            total_memory += memory
+
+        else:
+            memory = sys.getsizeof(obj) / (1024 * 1024)
+            print(f"Tamaño de objeto '{obj_name}': {memory:.2f} MB")
             total_memory += memory
     
     print(f"Tamaño total de la memoria consumida: {total_memory:.2f} MB")
