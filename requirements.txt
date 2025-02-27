@@ -4,3 +4,5 @@ scikit-learn
 fastapi
 uvicorn
 pyarrow
+pytest
+httpx
