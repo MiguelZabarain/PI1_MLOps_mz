@@ -4,7 +4,7 @@ from main import app
 
 client = TestClient(app)
 
-# Test: PlayTimeGenre endpoint
+# Test: PlayTimeGenre endpoint #1
 # Purpose: This test checks if we can get the year with most played hours for a specific game genre
 # Input: A genre name like 'Action'
 # Expected output: A dictionary containing the release year with most hours played for that genre
@@ -15,7 +15,7 @@ def test_PlayTimeGenre():
     assert isinstance(response.json(), dict)
     assert any("Año de lanzamiento" in key for key in response.json().keys())
 
-# Test: UserForGenre endpoint
+# Test: UserForGenre endpoint #2
 # Purpose: This test validates if we can get the user with most played hours for a specific genre
 # Input: A genre name like 'Action'
 # Expected output: A dictionary with user ID and list of played hours per year
@@ -27,7 +27,7 @@ def test_UserForGenre():
     assert "Usuario con más horas jugadas para Género" in list(response.json().keys())[0]
     assert "Horas jugadas" in response.json()
 
-# Test: UsersRecommend endpoint
+# Test: UsersRecommend endpoint #3
 # Purpose: This test checks if we can get top 3 recommended games for a specific year
 # Input: A year (integer) like 2015
 # Expected output: List of 3 dictionaries containing top recommended games
@@ -39,7 +39,7 @@ def test_UsersRecommend():
     assert len(response.json()) == 3
     assert all("Puesto" in list(item.keys())[0] for item in response.json())
 
-# Test: UsersWorstDeveloper endpoint
+# Test: UsersWorstDeveloper endpoint #4
 # Purpose: This test validates if we can get top 3 worst-rated developers for a specific year
 # Input: A year (integer) like 2015
 # Expected output: List of 3 dictionaries containing worst-rated developers
@@ -50,8 +50,11 @@ def test_UsersWorstDeveloper():
     assert isinstance(response.json(), list)
     assert len(response.json()) == 3
     assert all("Puesto" in list(item.keys())[0] for item in response.json())
+    assert all(isinstance(item, dict) for item in response.json())
+    assert response.headers["content-type"] == "application/json"
+    assert response.elapsed.total_seconds() < 5.0
 
-# Test: sentiment_analysis endpoint
+# Test: sentiment_analysis endpoint #5
 # Purpose: This test checks if we can get sentiment analysis results for a specific developer
 # Input: A developer name like 'Valve'
 # Expected output: Dictionary with developer name and counts of sentiment categories
@@ -61,8 +64,10 @@ def test_sentiment_analysis():
     assert response.status_code == 200
     assert isinstance(response.json(), dict)
     assert len(list(response.json().values())[0]) == 3
+    assert response.json()["Valve"][0].startswith("Negative = ")
+    assert response.elapsed.total_seconds() < 5.0
 
-# Test: recomendacion_juego endpoint
+# Test: recomendacion_juego endpoint #6
 # Purpose: This test validates if we can get game recommendations based on a game ID
 # Input: A game ID (string)
 # Expected output: List of 5 dictionaries containing recommended games
@@ -72,6 +77,8 @@ def test_recomendacion_juego():
     assert response.status_code == 200
     assert isinstance(response.json(), list)
     assert len(response.json()) == 5
+    assert len(set(game.values() for game in response.json())) == len(response.json())
+    assert response.elapsed.total_seconds() < 5.0
 
 # Error Handling Tests
 # These tests verify that the API properly handles invalid inputs
