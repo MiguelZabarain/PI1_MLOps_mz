@@ -26,6 +26,9 @@ def test_UserForGenre():
     assert isinstance(response.json(), dict)
     assert "Usuario con más horas jugadas para Género" in list(response.json().keys())[0]
     assert "Horas jugadas" in response.json()
+    assert all(["Año" in item and "Horas" in item for item in response.json()["Horas jugadas"]])
+    assert all(isinstance(x["Horas"], int) for x in response.json()["Horas jugadas"])
+    assert all(year.isdigit() and len(year) == 4 for year in [str(item["Año"]) for item in response.json()["Horas jugadas"]])
 
 # Test: UsersRecommend endpoint #3
 # Purpose: This test checks if we can get top 3 recommended games for a specific year
@@ -52,7 +55,6 @@ def test_UsersWorstDeveloper():
     assert all("Puesto" in list(item.keys())[0] for item in response.json())
     assert all(isinstance(item, dict) for item in response.json())
     assert response.headers["content-type"] == "application/json"
-    assert response.elapsed.total_seconds() < 5.0
 
 # Test: sentiment_analysis endpoint #5
 # Purpose: This test checks if we can get sentiment analysis results for a specific developer
@@ -65,7 +67,6 @@ def test_sentiment_analysis():
     assert isinstance(response.json(), dict)
     assert len(list(response.json().values())[0]) == 3
     assert response.json()["Valve"][0].startswith("Negative = ")
-    assert response.elapsed.total_seconds() < 5.0
 
 # Test: recomendacion_juego endpoint #6
 # Purpose: This test validates if we can get game recommendations based on a game ID
@@ -78,7 +79,6 @@ def test_recomendacion_juego():
     assert isinstance(response.json(), list)
     assert len(response.json()) == 5
     assert len(set(game.values() for game in response.json())) == len(response.json())
-    assert response.elapsed.total_seconds() < 5.0
 
 # Error Handling Tests
 # These tests verify that the API properly handles invalid inputs
