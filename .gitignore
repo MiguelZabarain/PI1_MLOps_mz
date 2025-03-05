@@ -2,5 +2,8 @@ __pycache__/
 __pycache__/main.cpython-311.pyc
 .pytest_cache/
 my_venv/
-output.txt
-output_bu.txt
+*.tmp
+*temp*.*
+*tmp*.*
+*cache*
+*venv*
