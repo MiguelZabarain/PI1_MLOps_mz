@@ -41,6 +41,8 @@ def test_UsersRecommend():
     assert isinstance(response.json(), list)
     assert len(response.json()) == 3
     assert all("Puesto" in list(item.keys())[0] for item in response.json())
+    assert response.headers["content-type"] == "application/json" # Validates proper response headers
+    assert all(isinstance(item, dict) for item in response.json()) # Validates data type consistency in response items
 
 # Test: UsersWorstDeveloper endpoint #4
 # Purpose: This test validates if we can get top 3 worst-rated developers for a specific year
