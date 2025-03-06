@@ -3,23 +3,25 @@ Como crear soluciones con FastAPI - https://www.youtube.com/watch?v=12NIB_RjxMo
 ---------------------------------
 Desde la consola Gitbash o la terminal de VSC:
 
-1) Crear entorno virtual: python -m venv my_venv
+1) Crea el entorno virtual: 
+python -m venv my_venv
 
-2) Activar el venv: source my_venv/Scripts/activate
+2) Activa el venv: 
+source my_venv/Scripts/activate
 
-3) Crear el archivo .gitignore
+3) Crea el archivo .gitignore
 touch .gitignore
 
-4) Editar .gitignore para agregar el entorno virtual y así quede excluido del repositorio GIT:
+4) Edita .gitignore para agregar el entorno virtual y así quede excluido del repositorio GIT:
 my_venv
 /my_venv
 my_venv/
 /my_venv/
 
-5) Estando dentro del entorno virtual (my_venv) realizar la instalacion de las librerías requeridas por el código en main.py:
+5) Estando dentro del entorno virtual (my_venv) realiza la instalacion de las librerías requeridas por el código en main.py:
 pip install fastapi uvicorn pandas scikit-learn pyarrow fastparquet
 
-6) Crear un archivo 'main.py' que contenga la solución software desarrollada -tan simple como desarrollar funciones, o tan compleja como quieras.
+6) Crea un archivo 'main.py' que contenga la solución software desarrollada -tan simple como desarrollar funciones, o tan compleja como quieras.
 La estructura del contenido de main.py debe ser:
   from fastapi import FastAPI
   app = FastAPI()
@@ -29,15 +31,18 @@ La estructura del contenido de main.py debe ser:
   def PlayTimeGenre(genero: str):
   ...
 
-7) Ejecuta y prueba tu solución software creada con FastAPI con alguna de las siguientes líneas:
+7) Levanta el servidor web uvicorn y ejecuta la solución software creada con FastAPI con alguna de las siguientes líneas:
 uvicorn main:app --reload                  <---Con la opción --reload, evitas bajar y subir el servidor cada que hagas modificaciones en main.py
-uvicorn main:app --reload > output.txt     <---Enviando los prints al archivo 'output.txt' 
+uvicorn main:app --reload > output.txt     <---Enviando los prints al archivo 'output.txt' -la opción con '>>' no sobre-escribe el archivo, le hace un append.
 uvicorn main:app --port 10000 --reload     <---Especificando el puerto 
 
-8) Cuando todo funcione OK, es tiempo de crear una lista de las dependencias al mismo nivel del 'venv' -la ubicación raiz del repo local:
+8) Desde un web-browser llama la solución y prueba los endpoints:
+http://localhost:8000/docs                 -Intenta tambien la versión de OpenAPI a ver que ocurre... http://127.0.0.1:8000/redoc
+
+9) Cuando todo funcione OK, es tiempo de crear una lista de las dependencias al mismo nivel del 'venv' -la ubicación raiz del repo local:
 pip freeze > requirements.txt
 
-9) Si lo estimas conveniente, crea el repo local con Git -si aún no lo tienes- y subelo al repo público en GitHub.
+10) Si lo estimas conveniente, crea el repo local con Git -si aún no lo tienes- y subelo al repo público en GitHub.
 ------------
 
 
