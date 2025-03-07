@@ -4,7 +4,7 @@ from ..main import app
 
 client = TestClient(app)
 
-# Test: PlayTimeGenre endpoint #1
+# Test: PlayTimeGenre (endpoint #1)
 # Purpose: This test checks if we can get the year with most played hours for a specific game genre
 # Input: A genre name like 'Action'
 # Expected output: A dictionary containing the release year with most hours played for that genre
@@ -15,7 +15,7 @@ def test_PlayTimeGenre():
     assert isinstance(response.json(), dict)
     assert any("Año de lanzamiento" in key for key in response.json().keys())
 
-# Test: UserForGenre endpoint #2
+# Test: UserForGenre (endpoint #2)
 # Purpose: This test validates if we can get the user with most played hours for a specific genre
 # Input: A genre name like 'Action'
 # Expected output: A dictionary with user ID and list of played hours per year
@@ -30,7 +30,7 @@ def test_UserForGenre():
     assert all(isinstance(x["Horas"], int) for x in response.json()["Horas jugadas"])
     assert all(year.isdigit() and len(year) == 4 for year in [str(item["Año"]) for item in response.json()["Horas jugadas"]])
 
-# Test: UsersRecommend endpoint #3
+# Test: UsersRecommend (endpoint #3)
 # Purpose: This test checks if we can get top 3 recommended games for a specific year
 # Input: A year (integer) like 2015
 # Expected output: List of 3 dictionaries containing top recommended games
@@ -44,7 +44,7 @@ def test_UsersRecommend():
     assert response.headers["content-type"] == "application/json" # Validates proper response headers
     assert all(isinstance(item, dict) for item in response.json()) # Validates data type consistency in response items
 
-# Test: UsersWorstDeveloper endpoint #4
+# Test: UsersWorstDeveloper (endpoint #4)
 # Purpose: This test validates if we can get top 3 worst-rated developers for a specific year
 # Input: A year (integer) like 2015
 # Expected output: List of 3 dictionaries containing worst-rated developers
@@ -58,7 +58,7 @@ def test_UsersWorstDeveloper():
     assert all(isinstance(item, dict) for item in response.json())
     assert response.headers["content-type"] == "application/json"
 
-# Test: sentiment_analysis endpoint #5
+# Test: sentiment_analysis (endpoint #5)
 # Purpose: This test checks if we can get sentiment analysis results for a specific developer
 # Input: A developer name like 'Valve'
 # Expected output: Dictionary with developer name and counts of sentiment categories
@@ -70,7 +70,7 @@ def test_sentiment_analysis():
     assert len(list(response.json().values())[0]) == 3
     assert response.json()["Valve"][0].startswith("Negative = ")
 
-# Test: recomendacion_juego endpoint #6
+# Test: recomendacion_juego (endpoint #6)
 # Purpose: This test validates if we can get game recommendations based on a game ID
 # Input: A game ID (string)
 # Expected output: List of 5 dictionaries containing recommended games
@@ -82,25 +82,36 @@ def test_recomendacion_juego():
     assert len(response.json()) == 5
     assert len(set(game.values() for game in response.json())) == len(response.json())
 
+# ======================================================================================
 # Error Handling Tests
 # These tests verify that the API properly handles invalid inputs
 
-# Test: Invalid genre handling
-def test_invalid_genre():
+# Test: Invalid genre handling for PlayTimeGenre (endpoint #1)
+def test_PlayTimeGenre_InvalidGenre():
     with pytest.raises(Exception): 
         client.get("/PlayTimeGenre/InvalidGenre")
 
-# Test: Invalid year handling
-def test_invalid_year():
+# Test: Invalid genre handling for UserForGenre (endpoint #2)
+def test_UserForGenre_InvalidGenre():
+    with pytest.raises(Exception): 
+        client.get("/UserForGenre/InvalidGenre")
+
+# Test: Invalid year handling for UsersRecommend (endpoint #3)
+def test_UsersRecommend_InvalidYear():
     with pytest.raises(Exception): 
         client.get("/UsersRecommend/9999")
 
-# Test: Invalid developer handling
-def test_invalid_developer():
-    response = client.get("/sentiment_analysis/InvalidDeveloper")
-    assert response.json() == {"InvalidDeveloper": ["Negative = 0", "Neutral = 0", "Positive = 0"]}
+# Test: Invalid year handling for UsersWorstDeveloper (endpoint #4)
+def test_UsersWorstDeveloper_InvalidYear():
+    with pytest.raises(Exception): 
+        client.get("/UsersWorstDeveloper/9999")
 
-# Test: Invalid game ID handling
-def test_invalid_game_id():
+# Test: Invalid developer handling for sentiment_analysis (endpoint #5)
+def test_sentiment_analysis_InvalidDeveloper():
+    with pytest.raises(Exception): 
+        client.get("/sentiment_analysis/InvalidDeveloper")
+
+# Test: Invalid game ID handling for recomendacion_juego (endpoint #6)
+def test_recomendacion_juego_InvalidGameID():
     with pytest.raises(Exception):
         client.get("/recomendacion_juego/999999999")

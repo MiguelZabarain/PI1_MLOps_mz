@@ -217,7 +217,11 @@ def sentiment_analysis(empresa_desarrolladora: str):
 
         # Filtra los registros en df_aux donde la columna 'developer' coincida con la 'empresa_desarrolladora' pasada como argumento
         df_aux = df_aux[df_aux['developer'] == empresa_desarrolladora]
-        
+
+        # Verifica si la empresa desarrolladora existe en el dataset
+        if df_aux.empty:
+            raise ValueError(f"La empresa desarrolladora '{empresa_desarrolladora}' no se encuentra en el dataset")
+
         # Cuenta los valores únicos en la columna 'sentiment_analysis' y guarda los recuentos en variables separadas
         Negative = "Negative = " + str(df_aux['sentiment_analysis'].value_counts().get(0, 0))
         Neutral = "Neutral = " + str(df_aux['sentiment_analysis'].value_counts().get(1, 0))
