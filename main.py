@@ -12,7 +12,7 @@ from logging.handlers import RotatingFileHandler
 logger = logging.getLogger("ErrorLogger")
 logger.setLevel(logging.ERROR)
 
-handler = RotatingFileHandler("Misc/main.py.log", maxBytes=1000000, backupCount=3)
+handler = RotatingFileHandler("Misc/Logs/main.py.log", maxBytes=500000, backupCount=3)
 handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 logger.addHandler(handler)
 #Joyuela: Fin de configuración del logger
@@ -107,7 +107,7 @@ def PlayTimeGenre(genero: str):
         
         return {f"Año de lanzamiento con más horas jugadas para Género {genero}" : str(max_playtime_year)}
     except Exception as e:
-        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: genero = {genero}========================================================================") #Joyuela: Loggea la excepción
         raise e
     
 
@@ -151,7 +151,7 @@ def UserForGenre(genero: str):
     
         return {f"Usuario con más horas jugadas para Género {genero}": max_playtime_user, "Horas jugadas": playtimeHrs_by_year_list}
     except Exception as e:
-        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: genero = {genero}========================================================================") #Joyuela: Loggea la excepción
         raise e
 
 
@@ -184,7 +184,7 @@ def UsersRecommend(annio: int):
     
         return top3_most_recommended
     except Exception as e:
-        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: annio = {annio}========================================================================") #Joyuela: Loggea la excepción
         raise e
 
 
@@ -216,7 +216,7 @@ def UsersWorstDeveloper(annio: int):
         
         return top3_least_recommended_dev
     except Exception as e:
-        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: annio = {annio}========================================================================") #Joyuela: Loggea la excepción
         raise e
 
 
@@ -246,11 +246,11 @@ def sentiment_analysis(empresa_desarrolladora: str):
         
         return {empresa_desarrolladora: [Negative, Neutral, Positive]} 
     except Exception as e:
-        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: empresa_desarrolladora = {empresa_desarrolladora}========================================================================") #Joyuela: Loggea la excepción
         raise e
 
     
-# End-point para obtener recomendaciones
+# End-point 6: para obtener recomendaciones
 @app.get("/recomendacion_juego/{id}")
 def recomendacion_juego(id: str):
     try:
@@ -274,7 +274,7 @@ def recomendacion_juego(id: str):
     
         return recommended_games
     except Exception as e:
-        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: id = {id}========================================================================") #Joyuela: Loggea la excepción
         raise e
 
 
