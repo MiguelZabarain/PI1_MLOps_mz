@@ -5,6 +5,19 @@ from sklearn.metrics.pairwise import cosine_similarity
 from fastapi import FastAPI
 import sys
 
+# Joyuela: Configuración del logger con rotación de archivos
+import logging
+from logging.handlers import RotatingFileHandler
+
+logger = logging.getLogger("ErrorLogger")
+logger.setLevel(logging.ERROR)
+
+handler = RotatingFileHandler("Misc/main.py.log", maxBytes=1000000, backupCount=3)
+handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+logger.addHandler(handler)
+#Joyuela: Fin de configuración del logger
+
+
 sys.stdout.reconfigure(encoding='utf-8') 
 app = FastAPI()
 
@@ -94,6 +107,7 @@ def PlayTimeGenre(genero: str):
         
         return {f"Año de lanzamiento con más horas jugadas para Género {genero}" : str(max_playtime_year)}
     except Exception as e:
+        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
         raise e
     
 
@@ -137,6 +151,7 @@ def UserForGenre(genero: str):
     
         return {f"Usuario con más horas jugadas para Género {genero}": max_playtime_user, "Horas jugadas": playtimeHrs_by_year_list}
     except Exception as e:
+        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
         raise e
 
 
@@ -169,6 +184,7 @@ def UsersRecommend(annio: int):
     
         return top3_most_recommended
     except Exception as e:
+        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
         raise e
 
 
@@ -200,6 +216,7 @@ def UsersWorstDeveloper(annio: int):
         
         return top3_least_recommended_dev
     except Exception as e:
+        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
         raise e
 
 
@@ -229,6 +246,7 @@ def sentiment_analysis(empresa_desarrolladora: str):
         
         return {empresa_desarrolladora: [Negative, Neutral, Positive]} 
     except Exception as e:
+        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
         raise e
 
     
@@ -256,6 +274,7 @@ def recomendacion_juego(id: str):
     
         return recommended_games
     except Exception as e:
+        logger.exception("----------------------------Error------------------------------") #Joyuela: Loggea la excepción
         raise e
 
 
