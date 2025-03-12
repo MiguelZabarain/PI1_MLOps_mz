@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi import FastAPI
 import sys
+from Datasets.data_loader import df1, df2, df3, cosine_sim
 
 # Joyuela: Configuración del logger con rotación de archivos
 import logging
@@ -20,7 +21,7 @@ logger.addHandler(handler)
 
 sys.stdout.reconfigure(encoding='utf-8') 
 app = FastAPI()
-
+'''
 # Carga el archivo Parquet 'Clean_australian_user_reviews_FE.parquet' en DataFrame 'df1'
 print("########################### df1 ###########################")
 df1 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_user_reviews_FE.parquet',)
@@ -72,7 +73,7 @@ tfidf_matrix = tfidf_vectorizer.fit_transform(CombFeatures())
 # Calcula la similitud del coseno entre juegos
 cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
 ########################################################################################################
-
+'''
 
 # End-point 1
 @app.get("/PlayTimeGenre/{genero}")
