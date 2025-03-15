@@ -4,76 +4,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from fastapi import FastAPI
 import sys
-from Datasets.data_loader import df1, df2, df3, cosine_sim
-
-# Joyuela: Configuración del logger con rotación de archivos
-import logging
-from logging.handlers import RotatingFileHandler
-
-logger = logging.getLogger("ErrorLogger")
-logger.setLevel(logging.ERROR)
-
-handler = RotatingFileHandler("Misc/Logs/main.py.log", maxBytes=500000, backupCount=3)
-handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
-logger.addHandler(handler)
-#Joyuela: Fin de configuración del logger
-
+from datasets.data_loader import df1, df2, df3, cosine_sim
+from utils.helpers import trace, logger
 
 sys.stdout.reconfigure(encoding='utf-8') 
 app = FastAPI()
-'''
-# Carga el archivo Parquet 'Clean_australian_user_reviews_FE.parquet' en DataFrame 'df1'
-print("########################### df1 ###########################")
-df1 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_user_reviews_FE.parquet',)
-print(df1.head(10))
-print("===========================================================")
-
-# Carga el archivo Parquet 'Clean_output_steam_games.parquet' en DataFrame 'df2'
-print("########################### df2 ###########################")
-df2 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_output_steam_games.parquet')
-print(df2.head(10))
-print("===========================================================")
-
-# Carga el archivo Parquet 'Clean_australian_users_items.parquet' en DataFrame 'df3'
-#df3 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_users_items.parquet')
-
-# Define filtro para cargar solo los registros con 'playtime_forever' mayor que 1000
-filters = [('playtime_forever', '>', 0)]
-
-# Especifica las columnas a cargar en el DataFrame
-columns_to_keep = ['item_id', 'item_name', 'playtime_forever', 'user_id']
-
-# Carga registros desde el archivo Parquet aplicando el filtro y especificando columnas
-df3 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_users_items.parquet',
-                      columns=columns_to_keep, filters=filters)
-
-########################################################################################################
-# Carga el modelo de recomendación de juegos que será consumido por la funcion recomendacion_juego(id)
-########################################################################################################
-# 1. Preparación de datos:
-# Función que combina columnas relevantes de df2 en una columna 'combined_features' y devuelve la 5ta parte.
-# Esto fue necesario para optimizar el uso de memoria. Con los ajustes al código original se bajó de 4 GB
-# a menos de 400 MB
-def CombFeatures():
-    total_rows = len(df2)
-    start_row = 0 
-    end_row = total_rows - 1 #// 10
-    df = pd.DataFrame()
-    df['combined_features'] = df2['genres'] + ' ' + df2['specs'] + ' ' + df2['developer'] + ' ' + df2['id']
-    return df.loc[start_row:end_row, 'combined_features']
-
-# 2. Vectorización TF-IDF:
-# Inicializa el vectorizador TF-IDF
-tfidf_vectorizer = TfidfVectorizer()
-# Transforma la columna 'combined_features' en una matriz TF-IDF
-#tfidf_matrix = tfidf_vectorizer.fit_transform(df2['combined_features'])
-tfidf_matrix = tfidf_vectorizer.fit_transform(CombFeatures())
-
-# 3. Cálculo de similitud del coseno:
-# Calcula la similitud del coseno entre juegos
-cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
-########################################################################################################
-'''
+trace()
 
 # End-point 1
 @app.get("/PlayTimeGenre/{genero}")
@@ -108,7 +44,7 @@ def PlayTimeGenre(genero: str):
         
         return {f"Año de lanzamiento con más horas jugadas para Género {genero}" : str(max_playtime_year)}
     except Exception as e:
-        logger.exception(f"Argument: genero = {genero}========================================================================") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: genero = {genero}") #Joyuela: Loggea la excepción
         raise e
     
 
@@ -152,7 +88,7 @@ def UserForGenre(genero: str):
     
         return {f"Usuario con más horas jugadas para Género {genero}": max_playtime_user, "Horas jugadas": playtimeHrs_by_year_list}
     except Exception as e:
-        logger.exception(f"Argument: genero = {genero}========================================================================") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: genero = {genero}") #Joyuela: Loggea la excepción
         raise e
 
 
@@ -185,7 +121,7 @@ def UsersRecommend(annio: int):
     
         return top3_most_recommended
     except Exception as e:
-        logger.exception(f"Argument: annio = {annio}========================================================================") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: annio = {annio}") #Joyuela: Loggea la excepción
         raise e
 
 
@@ -217,7 +153,7 @@ def UsersWorstDeveloper(annio: int):
         
         return top3_least_recommended_dev
     except Exception as e:
-        logger.exception(f"Argument: annio = {annio}========================================================================") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: annio = {annio}") #Joyuela: Loggea la excepción
         raise e
 
 
@@ -247,7 +183,7 @@ def sentiment_analysis(empresa_desarrolladora: str):
         
         return {empresa_desarrolladora: [Negative, Neutral, Positive]} 
     except Exception as e:
-        logger.exception(f"Argument: empresa_desarrolladora = {empresa_desarrolladora}========================================================================") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: empresa_desarrolladora = {empresa_desarrolladora}") #Joyuela: Loggea la excepción
         raise e
 
     
@@ -275,50 +211,6 @@ def recomendacion_juego(id: str):
     
         return recommended_games
     except Exception as e:
-        logger.exception(f"Argument: id = {id}========================================================================") #Joyuela: Loggea la excepción
+        logger.exception(f"Argument: id = {id}") #Joyuela: Loggea la excepción
         raise e
-
-
-###############################################################################################
-
-# Función para ayudar en la depuración del uso de memoria del código
-def print_memory_usage():
-    objects = globals()
-    total_memory = 0
-    
-    for obj_name, obj in objects.items():
-        # DataFrames
-        if isinstance(obj, pd.DataFrame):
-            memory = sys.getsizeof(obj) / (1024 * 1024)
-            print(f"Tamaño de DataFrame '{obj_name}': {memory:.2f} MB")
-            total_memory += memory
-        
-        # TfidfVectorizer
-        elif isinstance(obj, TfidfVectorizer):
-            memory = sys.getsizeof(obj) / (1024 * 1024)
-            print(f"Tamaño de TfidfVectorizer '{obj_name}': {memory:.2f} MB")
-            total_memory += memory
-        
-        # ndarray
-        elif isinstance(obj, np.ndarray):
-            memory = sys.getsizeof(obj) / (1024 * 1024)
-            print(f"Tamaño de ndarray '{obj_name}': {memory:.2f} MB")
-            total_memory += memory
-
-        # Otros objetos FastAPI, etc.
-        elif isinstance(obj, FastAPI):
-            memory = sys.getsizeof(obj) / (1024 * 1024)
-            print(f"Tamaño de FastAPI '{obj_name}': {memory:.2f} MB")
-            total_memory += memory
-
-        else:
-            memory = sys.getsizeof(obj) / (1024 * 1024)
-            print(f"Tamaño de objeto '{obj_name}': {memory:.2f} MB")
-            total_memory += memory
-    
-    print(f"Tamaño total de la memoria consumida: {total_memory:.2f} MB")
-
-
-# Llamada a la función para imprimir el tamaño de los objetos
-print_memory_usage()
 
