@@ -63,7 +63,7 @@ def trace():
 
 
 def _setup_logger():
-    # Joyuela: Configuración del logger con rotación de archivos
+    # Joyuela: Logger configuration with file rotation
     logger = logging.getLogger("ErrorLogger")
     logger.setLevel(logging.ERROR)
 
@@ -73,6 +73,5 @@ def _setup_logger():
 
     return logger
 
-
-# Export the logger
+# Make the logger available at module level for importing by other modules
 logger = _setup_logger()
