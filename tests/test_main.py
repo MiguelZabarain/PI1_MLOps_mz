@@ -13,7 +13,7 @@ def test_PlayTimeGenre():
     response = client.get("/PlayTimeGenre/Action")
     assert response.status_code == 200  # Validates successful API response
     assert isinstance(response.json(), dict)  # Validates response is a dictionary
-    assert any("Año de lanzamiento" in key for key in response.json().keys())  # Validates expected key format is present
+    assert any("Year of release" in key for key in response.json().keys())  # Validates expected key format is present
 
 # Test: UserForGenre (endpoint #2)
 # Purpose: This test validates if we can get the user with most played hours for a specific genre
@@ -24,11 +24,11 @@ def test_UserForGenre():
     response = client.get("/UserForGenre/Action")
     assert response.status_code == 200  # Validates successful API response
     assert isinstance(response.json(), dict)  # Validates response is a dictionary
-    assert "Usuario con más horas jugadas para Género" in list(response.json().keys())[0]  # Validates user key is present
-    assert "Horas jugadas" in response.json()  # Validates hours played key is present
-    assert all(["Año" in item and "Horas" in item for item in response.json()["Horas jugadas"]])  # Validates each item has year and hours
-    assert all(isinstance(x["Horas"], int) for x in response.json()["Horas jugadas"])  # Validates hours are integers
-    assert all(year.isdigit() and len(year) == 4 for year in [str(item["Año"]) for item in response.json()["Horas jugadas"]])  # Validates years are 4-digit numbers
+    assert "User with most hours played for Genre" in list(response.json().keys())[0]  # Validates user key is present
+    assert "Hours played" in response.json()  # Validates hours played key is present
+    assert all(["Year" in item and "Hours" in item for item in response.json()["Hours played"]])  # Validates each item has year and hours
+    assert all(isinstance(x["Hours"], int) for x in response.json()["Hours played"])  # Validates hours are integers
+    assert all(year.isdigit() and len(year) == 4 for year in [str(item["Year"]) for item in response.json()["Hours played"]])  # Validates years are 4-digit numbers
 
 # Test: UsersRecommend (endpoint #3)
 # Purpose: This test checks if we can get top 3 recommended games for a specific year
@@ -40,7 +40,7 @@ def test_UsersRecommend():
     assert response.status_code == 200  # Validates successful API response
     assert isinstance(response.json(), list)  # Validates response is a list
     assert len(response.json()) == 3  # Validates list contains exactly 3 items
-    assert all("Puesto" in list(item.keys())[0] for item in response.json())  # Validates each item has position key
+    assert all("Position" in list(item.keys())[0] for item in response.json())  # Validates each item has position key
     assert response.headers["content-type"] == "application/json"  # Validates proper response headers
     assert all(isinstance(item, dict) for item in response.json())  # Validates data type consistency in response items
 
@@ -54,7 +54,7 @@ def test_UsersWorstDeveloper():
     assert response.status_code == 200  # Validates successful API response
     assert isinstance(response.json(), list)  # Validates response is a list
     assert len(response.json()) == 3  # Validates list contains exactly 3 items
-    assert all("Puesto" in list(item.keys())[0] for item in response.json())  # Validates each item has position key
+    assert all("Position" in list(item.keys())[0] for item in response.json())  # Validates each item has position key
     assert all(isinstance(item, dict) for item in response.json())  # Validates each item is a dictionary
     assert response.headers["content-type"] == "application/json"  # Validates proper response headers
 

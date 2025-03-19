@@ -60,7 +60,7 @@ def PlayTimeGenre(genero: str):
         
         return {f"Year of release with most hours played for Genre {genero}" : str(max_playtime_year)}
     except Exception as e:
-        logger.exception(f"Argument: genero = {genero}") #Jewel: Log the exception
+        logger.exception(f"Argument: genero = {genero}") #Joyuela: Log the exception
         raise e
     
 
@@ -130,7 +130,7 @@ def UserForGenre(genero: str):
     
             return {f"User with most hours played for Genre {genero}": max_playtime_user, "Hours played": playtimeHrs_by_year_list}
         except Exception as e:
-            logger.exception(f"Argument: genero = {genero}") #Jewel: Log the exception
+            logger.exception(f"Argument: genero = {genero}") #Joyuela: Log the exception
             raise e
 
 # End-point 3
@@ -185,7 +185,7 @@ def UsersRecommend(annio: int):
     
             return top3_most_recommended
         except Exception as e:
-            logger.exception(f"Argument: annio = {annio}") #Jewel: Log the exception
+            logger.exception(f"Argument: annio = {annio}") #Joyuela: Log the exception
             raise e
 
 # End-point 4
@@ -239,7 +239,7 @@ def UsersWorstDeveloper(annio: int):
         
             return top3_least_recommended_dev
         except Exception as e:
-            logger.exception(f"Argument: annio = {annio}") #Jewel: Log the exception
+            logger.exception(f"Argument: annio = {annio}") #Joyuela: Log the exception
             raise e
 
 # End-point 5
@@ -294,7 +294,7 @@ def sentiment_analysis(empresa_desarrolladora: str):
         
             return {empresa_desarrolladora: [Negative, Neutral, Positive]} 
         except Exception as e:
-            logger.exception(f"Argument: empresa_desarrolladora = {empresa_desarrolladora}") #Jewel: Log the exception
+            logger.exception(f"Argument: empresa_desarrolladora = {empresa_desarrolladora}") #Joyuela: Log the exception
             raise e
     
 # End-point 6
@@ -345,5 +345,5 @@ def recomendacion_juego(id: str):
     
         return recommended_games
     except Exception as e:
-        logger.exception(f"Argument: id = {id}") #Jewel: Log the exception
+        logger.exception(f"Argument: id = {id}") #Joyuela: Log the exception
         raise e
