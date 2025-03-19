@@ -6,10 +6,10 @@ from fastapi import FastAPI
 import sys
 from datasets.data_loader import df1, df2, df3, cosine_sim
 from utils.helpers import trace, logger
+import uvicorn
 
 sys.stdout.reconfigure(encoding='utf-8') 
 app = FastAPI()
-trace()
 
 # End-point 1
 @app.get("/PlayTimeGenre/{genero}")
@@ -347,3 +347,8 @@ def recomendacion_juego(id: str):
     except Exception as e:
         logger.exception(f"Argument: id = {id}") #Joyuela: Log the exception
         raise e
+
+if __name__ == "__main__":
+    if "--trace" in sys.argv:  #Only execute trace() when script is run with "trace" argument (e.g., python main.py trace)
+        trace()  # Call the trace function to log memory usage and DataFrame contents
+    uvicorn.run("main:app", reload=True) #Run the FastAPI application
