@@ -21,16 +21,16 @@ def load_data():
         cosine_sim (ndarray): Cosine similarity matrix for game recommendations
     """
     # Load user reviews data
-    df1 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_user_reviews_FE.parquet')
+    df1 = pd.read_parquet('datasets/Clean_Parquet_Data_Steam/Clean_australian_user_reviews_FE.parquet')
 
     # Load game information data
-    df2 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_output_steam_games.parquet')
+    df2 = pd.read_parquet('datasets/Clean_Parquet_Data_Steam/Clean_output_steam_games.parquet')
 
     # Load user playtime statistics with filtering to reduce memory usage
     # Only include records where users have played the game (playtime > 0)
     filters = [('playtime_forever', '>', 0)]
     columns_to_keep = ['item_id', 'item_name', 'playtime_forever', 'user_id']
-    df3 = pd.read_parquet('Datasets/Clean_Parquet_Data_Steam/Clean_australian_users_items.parquet',
+    df3 = pd.read_parquet('datasets/Clean_Parquet_Data_Steam/Clean_australian_users_items.parquet',
                         columns=columns_to_keep, filters=filters)
 
     ########################################################################################################
