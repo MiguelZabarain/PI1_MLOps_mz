@@ -1,9 +1,9 @@
 import pandas as pd
-import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from config import PARQUET_FILES
 
-def load_data():
+def _load_data():
     """
     Loads and processes Steam game data from Parquet files and builds a recommendation model.
     
@@ -21,30 +21,26 @@ def load_data():
         cosine_sim (ndarray): Cosine similarity matrix for game recommendations
     """
     # Load user reviews data
-    df1 = pd.read_parquet('datasets/Clean_Parquet_Data_Steam/Clean_australian_user_reviews_FE.parquet')
+    df1 = pd.read_parquet(PARQUET_FILES['user_reviews'])
 
     # Load game information data
-    df2 = pd.read_parquet('datasets/Clean_Parquet_Data_Steam/Clean_output_steam_games.parquet')
+    df2 = pd.read_parquet(PARQUET_FILES['steam_games'])
 
     # Load user playtime statistics with filtering to reduce memory usage
     # Only include records where users have played the game (playtime > 0)
     filters = [('playtime_forever', '>', 0)]
     columns_to_keep = ['item_id', 'item_name', 'playtime_forever', 'user_id']
-    df3 = pd.read_parquet('datasets/Clean_Parquet_Data_Steam/Clean_australian_users_items.parquet',
+    df3 = pd.read_parquet(PARQUET_FILES['user_items'],
                         columns=columns_to_keep, filters=filters)
 
     ########################################################################################################
     # Build game recommendation model
     ########################################################################################################
     
-    def CombFeatures():
+    def _CombFeatures():
         """
         Creates a combined feature representation of games by concatenating multiple attributes.
-        
-        Memory optimization: Originally, this function processed all data which required ~4GB RAM.
-        The current implementation uses the full dataset as we found it provides better recommendation
-        quality while still keeping memory usage under 400MB.
-        
+                
         Returns:
         --------
         Series
@@ -64,7 +60,7 @@ def load_data():
     # Note: We're using the dynamically generated features from CombFeatures()
     # rather than a pre-existing column in df2
     tfidf_vectorizer = TfidfVectorizer()
-    tfidf_matrix = tfidf_vectorizer.fit_transform(CombFeatures())
+    tfidf_matrix = tfidf_vectorizer.fit_transform(_CombFeatures())
 
     # Calculate cosine similarity between all game pairs
     # This creates a square matrix where each element [i,j] represents 
@@ -74,4 +70,4 @@ def load_data():
     return df1, df2, df3, cosine_sim
 
 # Make the loaded data available at module level for importing by other modules
-df1, df2, df3, cosine_sim = load_data()
+df1, df2, df3, cosine_sim = _load_data()

@@ -1,10 +1,9 @@
 import sys
 import pandas as pd
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from fastapi import FastAPI
 import logging
 from logging.handlers import RotatingFileHandler
+from config import TEMP_DIR, TEMP_OUTPUT, LOG_DIR, LOG_FILE
+import os
 
 def trace():
     """
@@ -13,18 +12,15 @@ def trace():
     """
     # Get 'objects' from the caller's global namespace
     import inspect
-    import os
     frame = inspect.currentframe().f_back
     objects = frame.f_globals
     
-    # Create tmp directory if it doesn't exist
-    tmp_dir = "tmp"
-    if not os.path.exists(tmp_dir):
-        os.makedirs(tmp_dir)
+    # Create temporary directory if it doesn't exist
+    if not os.path.exists(TEMP_DIR):
+        os.makedirs(TEMP_DIR)
     
     # Open the output file in the tmp directory with UTF-8 encoding
-    output_path = os.path.join(tmp_dir, "output.tmp")
-    with open(output_path, "w", encoding="utf-8") as output_file:
+    with open(TEMP_OUTPUT, "w", encoding="utf-8") as output_file:
         # The encapsulated inner functions... 
         def _write_memory_usage(objs):
             """Inner function to write memory usage information"""
@@ -76,7 +72,11 @@ def _setup_logger():
     logger = logging.getLogger("ErrorLogger")
     logger.setLevel(logging.ERROR)
 
-    handler = RotatingFileHandler("misc/logs/main.py.log", maxBytes=500000, backupCount=3)
+    # Create logging directory if it doesn't exist
+    if not os.path.exists(LOG_DIR):
+        os.makedirs(LOG_DIR)
+    
+    handler = RotatingFileHandler(LOG_FILE, maxBytes=500000, backupCount=3)
     handler.setFormatter(logging.Formatter("="*60 + "\n" + "%(asctime)s - %(levelname)s - %(message)s"))
     logger.addHandler(handler)
 
