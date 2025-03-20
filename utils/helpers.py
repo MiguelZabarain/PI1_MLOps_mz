@@ -76,7 +76,7 @@ def _setup_logger():
     logger = logging.getLogger("ErrorLogger")
     logger.setLevel(logging.ERROR)
 
-    handler = RotatingFileHandler("Misc/Logs/main.py.log", maxBytes=500000, backupCount=3)
+    handler = RotatingFileHandler("misc/logs/main.py.log", maxBytes=500000, backupCount=3)
     handler.setFormatter(logging.Formatter("="*60 + "\n" + "%(asctime)s - %(levelname)s - %(message)s"))
     logger.addHandler(handler)
 
