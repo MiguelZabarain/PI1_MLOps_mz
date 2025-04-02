@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from fastapi import FastAPI
 import sys
 from datasets.data_loader import df1, df2, df3, cosine_sim
